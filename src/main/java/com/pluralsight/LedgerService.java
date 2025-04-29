@@ -1,5 +1,8 @@
 package com.pluralsight;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 // LedgerService Class - Basic Methods
@@ -7,26 +10,30 @@ public class LedgerService {
 
     // Add a transaction to the ledger
     public void addTransaction(Transaction transaction) {
-        // TODO: Write transaction to transactions.csv file
+        try (FileWriter fw = new FileWriter("transactions.csv", true);
+             PrintWriter pw = new PrintWriter(fw)) {
+
+            pw.println(transaction.toCSVString());
+            System.out.println("Transaction saved successfully!");
+
+        } catch (IOException e) {
+            System.out.println("Error saving transaction: " + e.getMessage());
+        }
     }
 
-    // Read all transactions from the ledger
+    // Placeholder for reading transactions
     public List<Transaction> readAllTransactions() {
-        // TODO: Read transactions.csv and return a list of Transaction objects
+        // TODO: Read transactions.csv and return list of Transaction objects
         return null;
     }
 
-    // Filter transactions - Deposits only
+    // Placeholder for filtering deposits
     public List<Transaction> getDeposits(List<Transaction> transactions) {
-        // TODO: Return only transactions where amount > 0
         return null;
     }
 
-    // Filter transactions - Payments only
+    // Placeholder for filtering payments
     public List<Transaction> getPayments(List<Transaction> transactions) {
-        // TODO: Return only transactions where amount < 0
         return null;
-
-
     }
 }

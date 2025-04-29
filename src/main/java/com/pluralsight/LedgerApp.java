@@ -1,14 +1,15 @@
 package com.pluralsight;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class LedgerApp {
 
     public static void main(String[] args) {
-        // Create a Scanner for user input
         Scanner scanner = new Scanner(System.in);
+        LedgerService ledgerService = new LedgerService();
         boolean running = true;
 
-        // Main application loop
         while (running) {
             // Home Screen Menu
             System.out.println("======================================");
@@ -25,28 +26,53 @@ public class LedgerApp {
 
             switch (choice) {
                 case "D":
-                    // Add Deposit Flow
-                    System.out.println("// TODO: Handle Add Deposit");
+                    // Handle Add Deposit
+                    Transaction deposit = promptForTransaction(scanner, true);
+                    ledgerService.addTransaction(deposit);
                     break;
+
                 case "P":
-                    // Make Payment Flow
-                    System.out.println("// TODO: Handle Make Payment");
+                    // Handle Make Payment
+                    Transaction payment = promptForTransaction(scanner, false);
+                    ledgerService.addTransaction(payment);
                     break;
+
                 case "L":
-                    // Ledger Screen Flow
+                    // TODO: Handle Ledger Display
                     System.out.println("// TODO: Handle Ledger Display");
                     break;
+
                 case "X":
-                    // Exit Application
                     System.out.println("Exiting the application. Goodbye!");
                     running = false;
                     break;
+
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
         }
 
-        // Close Scanner before exiting
         scanner.close();
+    }
+
+    // Prompt the user for transaction input
+    private static Transaction promptForTransaction(Scanner scanner, boolean isDeposit) {
+        System.out.print("Enter description: ");
+        String description = scanner.nextLine();
+
+        System.out.print("Enter vendor: ");
+        String vendor = scanner.nextLine();
+
+        System.out.print("Enter amount: ");
+        double amount = Double.parseDouble(scanner.nextLine());
+
+        if (!isDeposit) {
+            amount *= -1;  // Make it negative for payment
+        }
+
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
+
+        return new Transaction(date, time, description, vendor, amount);
     }
 }
