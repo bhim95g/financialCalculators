@@ -1,19 +1,19 @@
 package com.pluralsight;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
+// Transaction
 public class Transaction {
 
-    private String date;
-    private String time;
+    private LocalDate date;
+    private LocalTime time;
     private String description;
     private String vendor;
     private double amount;
 
-    public Transaction(String date, String time, String description, String vendor, double amount) {
+    // Constructor
+    public Transaction(LocalDate date, LocalTime time, String description, String vendor, double amount) {
         this.date = date;
         this.time = time;
         this.description = description;
@@ -21,13 +21,12 @@ public class Transaction {
         this.amount = amount;
     }
 
-    // getter
-
-    public String getDate() {
+    // Getters
+    public LocalDate getDate() {
         return date;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
@@ -45,11 +44,11 @@ public class Transaction {
 
     // setter
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public void setTime(String time) {
+    public void setTime(LocalTime time) {
         this.time = time;
     }
 
@@ -65,31 +64,15 @@ public class Transaction {
         this.amount = amount;
     }
 
+    // Convert the transaction to a string line for saving to CSV
+    public String toCSVString() {
+        return date + "|" + time + "|" + description + "|" + vendor + "|" + amount;
+    }
 
-    public static ArrayList<Transaction> getStatement(){
-        ArrayList<Transaction> statement = new ArrayList<>();
-        String fileName = "src/main/resources/transactions.csv";
-
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split("//|");
-                String date = parts[0];
-                String time = parts[1];
-                String description = parts[2];
-                String vendor = parts[3];
-                double amount = Double.parseDouble(parts[4]);
-
-            }
-
-
-
-        } catch (IOException e) {
-            System.out.println("Error reading statement file: "+ e.getMessage());
-
-        }
-
-
-        return statement;
+    // Optional: Nicely format for printing to the console
+    @Override
+    public String toString() {
+        return date + " " + time + " | " + description + " | " + vendor + " | " + amount;
     }
 }
+
