@@ -1,34 +1,26 @@
 package com.pluralsight;
 
 import java.io.*;
-import java.util.List;
-import java.util.ArrayList;
-import java.time.LocalTime;
 import java.time.LocalDate;
-import java.util.Collections;
+import java.time.LocalTime;
 import java.time.YearMonth;
+import java.util.*;
 import java.util.stream.Collectors;
 
-// LedgerService Class - Basic Methods
 public class LedgerService {
 
-    // Add a transaction to the ledger
     public void addTransaction(Transaction transaction) {
         try (FileWriter fw = new FileWriter("transactions.csv", true);
              PrintWriter pw = new PrintWriter(fw)) {
-
-            pw.println(transaction.toCSV());
-            System.out.println("Transaction saved successfully!");
-
+            pw.println(transaction.toCSVString());
+            System.out.println("Transaction saved successfully.");
         } catch (IOException e) {
             System.out.println("Error saving transaction: " + e.getMessage());
         }
     }
 
-    // Reading Transaction
     public List<Transaction> readAllTransactions() {
         List<Transaction> transactions = new ArrayList<>();
-
         try (BufferedReader reader = new BufferedReader(new FileReader("transactions.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -40,40 +32,65 @@ public class LedgerService {
                     String vendor = parts[3];
                     double amount = Double.parseDouble(parts[4]);
 
-                    Transaction transaction = new Transaction(date, time, description, vendor, amount);
-                    transactions.add(transaction);
+                    transactions.add(new Transaction(date, time, description, vendor, amount));
                 }
             }
         } catch (IOException e) {
             System.out.println("Error reading transactions: " + e.getMessage());
         }
-
-        // Reverse list for newest-first order
-        Collections.reverse(transactions);
+        Collections.reverse(transactions); // Newest first
         return transactions;
     }
 
-
-    // Deposits
     public List<Transaction> getDeposits(List<Transaction> transactions) {
-        List<Transaction> deposits = new ArrayList<>();
-        for (Transaction t : transactions) {
-            if (t.getAmount() > 0) {
-                deposits.add(t);
-            }
-        }
-        return deposits;
+        return transactions.stream().filter(t -> t.getAmount() > 0).collect(Collectors.toList());
+    }
 
+    public List<Transaction> getPayments(List<Transaction> transactions) {
+        return transactions.stream().filter(t -> t.getAmount() < 0).collect(Collectors.toList());
+    }
 
-        // Payments
-        public List<Transaction> getPayments(List<Transaction> transactions) {
-            List<Transaction> payments = new ArrayList<>();
+    public List<Transaction> monthToDate(List<Transaction> all) {
+        LocalDate today = LocalDate.now();
+        return all.stream()
+                .filter(t -> t.getDate().getMonth() == today.getMonth() && t.getDate().getYear() == today.getYear())
+                .collect(Collectors.toList());
+    }
+
+    public List<Transaction> previousMonth(List<Transaction> all) {
+        YearMonth lastMonth = YearMonth.now().minusMonths(1);
+        return all.stream()
+                .filter(t -> YearMonth.from(t.getDate()).equals(lastMonth))
+                .collect(Collectors.toList());
+    }
+
+    public List<Transaction> yearToDate(List<Transaction> all) {
+        int currentYear = LocalDate.now().getYear();
+        return all.stream()
+                .filter(t -> t.getDate().getYear() == currentYear)
+                .collect(Collectors.toList());
+    }
+
+    public List<Transaction> previousYear(List<Transaction> all) {
+        int lastYear = LocalDate.now().getYear() - 1;
+        return all.stream()
+                .filter(t -> t.getDate().getYear() == lastYear)
+                .collect(Collectors.toList());
+    }
+
+    public List<Transaction> searchByVendor(List<Transaction> all, String vendor) {
+        return all.stream()
+                .filter(t -> t.getVendor().equalsIgnoreCase(vendor.trim()))
+                .collect(Collectors.toList());
+    }
+
+    public void printTransactions(List<Transaction> transactions) {
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found.");
+        } else {
             for (Transaction t : transactions) {
-                if (t.getAmount() < 0) {
-                    payments.add(t);
-                }
+                System.out.println(t);
             }
-            return payments;
         }
     }
 }
