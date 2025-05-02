@@ -1,11 +1,13 @@
 package com.pluralsight;
 
-import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.time.LocalTime;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.time.YearMonth;
+import java.util.stream.Collectors;
 
 // LedgerService Class - Basic Methods
 public class LedgerService {
@@ -15,7 +17,7 @@ public class LedgerService {
         try (FileWriter fw = new FileWriter("transactions.csv", true);
              PrintWriter pw = new PrintWriter(fw)) {
 
-            pw.println(transaction.toCSVString());
+            pw.println(transaction.toCSV());
             System.out.println("Transaction saved successfully!");
 
         } catch (IOException e) {
@@ -23,7 +25,7 @@ public class LedgerService {
         }
     }
 
-    // Placeholder for reading transactions
+    // Reading Transaction
     public List<Transaction> readAllTransactions() {
         List<Transaction> transactions = new ArrayList<>();
 
@@ -50,15 +52,30 @@ public class LedgerService {
         Collections.reverse(transactions);
         return transactions;
     }
-    }
 
-    // Placeholder for filtering deposits
+
+    // Deposits
     public List<Transaction> getDeposits(List<Transaction> transactions) {
-        return null;
-    }
+        List<Transaction> deposits = new ArrayList<>();
+        for (Transaction t : transactions) {
+            if (t.getAmount() > 0) {
+                deposits.add(t);
+            }
+        }
+        return deposits;
 
-    // Placeholder for filtering payments
-    public List<Transaction> getPayments(List<Transaction> transactions) {
-        return null;
+
+        // Payments
+        public List<Transaction> getPayments(List<Transaction> transactions) {
+            List<Transaction> payments = new ArrayList<>();
+            for (Transaction t : transactions) {
+                if (t.getAmount() < 0) {
+                    payments.add(t);
+                }
+            }
+            return payments;
+        }
     }
 }
+
+

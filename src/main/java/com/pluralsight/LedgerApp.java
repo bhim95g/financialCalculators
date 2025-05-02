@@ -1,5 +1,6 @@
 package com.pluralsight;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -8,7 +9,7 @@ public class LedgerApp {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        LedgerService ledgerService = new LedgerService();
+        final LedgerService ledgerService = new LedgerService();
         boolean running = true;
 
         while (running) {
@@ -29,22 +30,22 @@ public class LedgerApp {
                 case "D":
                     // Handle Add Deposit
                     Transaction deposit = promptForTransaction(scanner, true);
-                    ledgerService.addTransaction(deposit);
                     break;
 
                 case "P":
                     // Handle Make Payment
                     Transaction payment = promptForTransaction(scanner, false);
-                    ledgerService.addTransaction(payment);
                     break;
 
                 case "L":
-                    // TODO: Handle Ledger Display
-                    System.out.println("// TODO: Handle Ledger Display");
+                    //Ledger Screen
+                    ArrayList<Transaction> transactions = new ArrayList<>();
+                    ledgerScreen(scanner, transactions);
                     break;
 
                 case "X":
                     System.out.println("Exiting the application. Goodbye!");
+                    System.exit(0);
                     running = false;
                     break;
 
@@ -56,7 +57,7 @@ public class LedgerApp {
         scanner.close();
     }
 
-    // Prompt the user for transaction input
+    // User Deposit
     private static Transaction promptForTransaction(Scanner scanner, boolean isDeposit) {
         System.out.print("Enter description: ");
         String description = scanner.nextLine();
@@ -75,5 +76,69 @@ public class LedgerApp {
         LocalTime time = LocalTime.now();
 
         return new Transaction(date, time, description, vendor, amount);
+    }
+// Ledger Screen
+    private static void ledgerScreen(Scanner scanner, ArrayList<Transaction> transactions) {
+        boolean running = true;
+        while (running) {
+            System.out.println("Please select menu options below");
+            System.out.println("(A) View All Transaction");
+            System.out.println("(D) View All Deposits");
+            System.out.println("(P) View All Payments");
+            System.out.println("(H) Home (Return to Main Manu)");
+            System.out.println("Enter your choice here: ");
+            String ledgerChoice = scanner.nextLine().trim().toUpperCase();
+
+            switch (ledgerChoice) {
+                case "A":
+                    System.out.println("Show All Transaction");
+                    for (Transaction t : transactions) {
+                        System.out.println(t);
+                    }
+                    break;
+
+                case "D":
+                    System.out.println("Show Deposits Only");
+                    for (Transaction t : transactions) {
+                        if (t.getAmount() > 0) {
+                            System.out.println(t);
+                        }
+                    }
+                    break;
+
+                case "P":
+                    System.out.println("Show Payments Only");
+                    for (Transaction t : transactions) {
+                        if (t.getAmount() < 0) {
+                            System.out.println(t);
+                        }
+                    }
+                    break;
+
+                case "R":
+                    boolean viewingReports = true;
+                    while (true) {
+                        System.out.println("\nReports Menu:");
+                        System.out.println("1) Month To Date");
+                        System.out.println("2) Previous Month");
+                        System.out.println("3) Year To Date");
+                        System.out.println("4) Previous Year");
+                        System.out.println("5) Search by Vendor");
+                        System.out.println("0) Back");
+                        System.out.print("Your choice: ");
+                        String reportChoice = scanner.nextLine();
+
+                        LocalDate today = LocalDate.now();
+                    }
+
+
+                case "H":
+                    boolean viewing = false;
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Please try again");
+            }
+        }
     }
 }
