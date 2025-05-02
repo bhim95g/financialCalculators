@@ -15,10 +15,11 @@ public class LedgerService {
             pw.println(transaction.toCSVString());
             System.out.println("Transaction saved successfully.");
         } catch (IOException e) {
+            // Handle error if file writing fails
             System.out.println("Error saving transaction: " + e.getMessage());
         }
     }
-
+    // This method reads all transactions from the CSV file into a List
     public List<Transaction> readAllTransactions() {
         List<Transaction> transactions = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("transactions.csv"))) {
@@ -26,6 +27,7 @@ public class LedgerService {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\\|");
                 if (parts.length == 5) {
+                    // Convert each part into appropriate data type
                     LocalDate date = LocalDate.parse(parts[0]);
                     LocalTime time = LocalTime.parse(parts[1]);
                     String description = parts[2];
@@ -70,7 +72,7 @@ public class LedgerService {
                 .filter(t -> t.getDate().getYear() == currentYear)
                 .collect(Collectors.toList());
     }
-
+    // This method adds a new transaction to the "transactions.csv" file
     public List<Transaction> previousYear(List<Transaction> all) {
         int lastYear = LocalDate.now().getYear() - 1;
         return all.stream()

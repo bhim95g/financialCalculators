@@ -8,10 +8,14 @@ import java.time.LocalTime;
 public class LedgerApp {
 
     public static void main(String[] args) {
+        // Create a Scanner to read user input from the command line
         Scanner scanner = new Scanner(System.in);
+
         final LedgerService ledgerService = new LedgerService();
+        // This Controls the main application loop
         boolean running = true;
 
+        // Main menu
         while (running) {
             // Home Screen Menu
             System.out.println("======================================");
@@ -24,6 +28,7 @@ public class LedgerApp {
             System.out.println("X) Exit");
             System.out.print("Your choice: ");
 
+            //Converting user input to upper case
             String choice = scanner.nextLine().trim().toUpperCase();
 
             switch (choice) {
@@ -44,6 +49,7 @@ public class LedgerApp {
                     break;
 
                 case "X":
+                    // Exit the application
                     System.out.println("Exiting the application. Goodbye!");
                     System.exit(0);
                     running = false;
@@ -53,11 +59,13 @@ public class LedgerApp {
                     System.out.println("Invalid choice. Please try again.");
             }
         }
-
+// Close the scanner to free system resources
         scanner.close();
     }
 
     // User Deposit
+    //Allows user to enter the details of a transaction. If deposit the amount stays positive. If payment amount is turned negative.
+
     private static Transaction promptForTransaction(Scanner scanner, boolean isDeposit) {
         System.out.print("Enter description: ");
         String description = scanner.nextLine();
@@ -68,6 +76,7 @@ public class LedgerApp {
         System.out.print("Enter amount: ");
         double amount = Double.parseDouble(scanner.nextLine());
 
+        // Convert payment amount to negative
         if (!isDeposit) {
             amount *= -1;  // Make it negative for payment
         }

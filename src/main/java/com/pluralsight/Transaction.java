@@ -3,13 +3,15 @@ package com.pluralsight;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+// Represents a single transaction (deposit or payment)
 public class Transaction {
-    private LocalDate date;
-    private LocalTime time;
-    private String description;
-    private String vendor;
-    private double amount;
+    private final LocalDate date;
+    private final LocalTime time;
+    private final String description;
+    private final String vendor;
+    private final double amount;
 
+    // Constructor to create a transaction object
     public Transaction(LocalDate date, LocalTime time, String description, String vendor, double amount) {
         this.date = date;
         this.time = time;
@@ -18,6 +20,7 @@ public class Transaction {
         this.amount = amount;
     }
 
+    //Getters Transactions
     public LocalDate getDate() {
         return date;
     }
@@ -38,6 +41,7 @@ public class Transaction {
         return amount;
     }
 
+    // Converts the transaction into a single CSV-formatted line
     public String toCSVString() {
         return date + "|" + time + "|" + description + "|" + vendor + "|" + amount;
     }
